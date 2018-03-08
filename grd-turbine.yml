@@ -1,0 +1,21 @@
+#server:
+#  port: ${PORT:8989}
+
+management:
+  port: 8981
+
+#turbine:
+#  stream:
+#    port: 8991
+
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO
+---
+spring:
+  profiles: docker
+
+eureka:
+  instance:
+    hostname: turbine

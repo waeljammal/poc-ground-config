@@ -1,0 +1,121 @@
+management:
+  security:
+    enabled: false
+
+logging:
+  level:
+    root: INFO
+    org.springframework: WARN
+
+spring:
+  rabbitmq:
+    username: ${rabbit_username:demo}
+    password: ${rabbit_password:password}
+    host: ${rabbit_host:localhost}
+    port: ${rabbit_port:5672}
+    connection-timeout: 5000
+    requested-heartbeat: 5
+    template:
+      receive-timeout: 120000
+    ssl:
+      enabled: ${rabbit_use_ssl:false}
+  zipkin:
+    baseUrl: http://localhost:9411
+    locator:
+      discovery:
+        enabled: true
+  devtools:
+    livereload:
+      enabled: false
+  sleuth:
+    sampler:
+      percentage: 1.0
+    integration:
+      enabled: true
+    schedule:
+      enabled: true
+
+hystrix:
+  stream:
+    queue:
+      gatherRate: 1000
+      sendRate: 1000
+  threadpool:
+    default:
+      # Maximum number of concurrent requests when using thread pools (Default: 10)
+      coreSize: 100
+      # Maximum LinkedBlockingQueue size - -1 for using SynchronousQueue (Default: -1)
+      maxQueueSize: -1
+      # Queue size rejection threshold (Default: 5)
+      queueSizeRejectionThreshold: 5
+  command:
+    default:
+      circuitBreaker:
+        sleepWindowInMilliseconds: 10000
+        requestVolumeThreshold: 3
+      execution:
+        isolation:
+          strategy: THREAD
+          thread:
+            timeoutInMilliseconds: 20000
+
+ribbon:
+  # Interval to refresh the server list from the source
+  serverListRefreshInterval: 3000
+
+  # Max number of retries on the same server (excluding the first try)
+  maxAutoRetries: 3
+
+  # Max number of next servers to retry (excluding the first server)
+  maxAutoRetriesNextServer: 3
+
+  # Interval to refresh the server list from the source
+  ServerListRefreshInterval: 3000
+
+  # Max number of retries on the same server (excluding the first try)
+  MaxAutoRetries: 1
+
+  # Max number of next servers to retry (excluding the first server)
+  MaxAutoRetriesNextServer: 1
+
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 5
+    leaseExpirationDurationInSeconds: 5
+    metadataMap:
+      instanceId: ${vcap.application.instance_id:${spring.application.name}:${spring.application.instance_id:${random.value}}}
+  client:
+    # Default values comes from org.springframework.cloud.netflix.eurek.EurekaClientConfigBean
+    registryFetchIntervalSeconds: 5
+    instanceInfoReplicationIntervalSeconds: 5
+    initialInstanceInfoReplicationIntervalSeconds: 5
+
+zuul:
+  ignored-patterns: /**/health/**,/**/internal/**
+  ribbon-isolation-strategy: THREAD
+
+feign:
+  hystrix:
+    enabled: true
+---
+# For deployment in Docker containers
+spring:
+  profiles: docker
+  rabbitmq:
+    username: demo
+    password: password
+    host: rabbitmq
+  zipkin:
+    baseUrl: http://zipkin:9411
+
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 10
+    leaseExpirationDurationInSeconds: 10
+    metadataMap:
+      instanceId: ${vcap.application.instance_id:${spring.application.name}:${spring.application.instance_id:${random.value}}}
+  client:
+    # Default values comes from org.springframework.cloud.netflix.eurek.EurekaClientConfigBean
+    registryFetchIntervalSeconds: 10
+    instanceInfoReplicationIntervalSeconds: 10
+    initialInstanceInfoReplicationIntervalSeconds: 10

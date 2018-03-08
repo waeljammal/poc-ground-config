@@ -1,0 +1,24 @@
+server:
+  port: 8766
+
+spring:
+  boot:
+    admin:
+      discovery:
+        enabled: true
+      turbine:
+        clusters: default
+        location: grd-turbine
+        url: http://localhost:8989/turbine.stream
+      routes:
+        endpoints: env,metrics,dump,jolokia,info,configprops,trace,logfile,refresh,flyway,liquibase,heapdump,loggers,auditevents,hystrix.stream
+---
+# For deployment in Docker containers
+spring:
+  profiles: docker
+  boot:
+    admin:
+      turbine:
+        clusters: default
+        location: grd-turbine
+        url: http://turbine:8989/turbine.stream

@@ -1,0 +1,24 @@
+endpoints:
+  restart:
+    enabled: true
+  shutdown:
+    enabled: true
+
+server:
+  port: 7979
+
+eureka:
+  client:
+    # Region where eureka is deployed -For AWS specify one of the AWS regions, for other datacenters specify a arbitrary string
+    # indicating the region.This is normally specified as a -D option (eg) -Deureka.region=eu-west-1
+    region: default
+
+    #For eureka clients running in eureka server, it needs to connect to servers in other zones
+    preferSameZone: false
+
+    eu-west-1:
+      availabilityZones: default
+
+  instance:
+    # Virtual host name by which the clients identifies this service
+    virtualHostName: ${spring.application.name}
